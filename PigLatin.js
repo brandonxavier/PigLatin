@@ -47,18 +47,18 @@ var bcp = {
 };
 
 cb.settings_choices = [
-    {name:'pig_threshold', type:'int',
-        minValue:5, maxValue:99, defaultValue:5, label: "Pig Threshold"},
-    {name:'mute_threshold', type:'int',
-        minValue:6, maxValue:99, defaultValue:10, label: "Muted Threshold"},
-    {name:'increment', type:'int',
-        minValue:0, maxValue:99, defaultValue:2, label: "Increment Thresholds After User Tips"},
-    {name:'mod_commands', type:'choice',
-        choice1:'Mods CAN use commands',
-        choice2:'Mods CANNOT use commands', defaultValue:'Mods CAN use commands'}
+    {name: 'pig_threshold', type: 'int',
+        minValue: 5, maxValue: 99, defaultValue: 5, label: "Pig Threshold"},
+    {name: 'mute_threshold', type: 'int',
+        minValue: 6, maxValue: 99, defaultValue: 10, label: "Muted Threshold"},
+    {name: 'increment', type: 'int',
+        minValue: 0, maxValue: 99, defaultValue: 2, label: "Increment Thresholds After User Tips"},
+    {name: 'mod_commands', type: 'choice',
+        choice1: 'Mods CAN use commands',
+        choice2: 'Mods CANNOT use commands', defaultValue: 'Mods CAN use commands'}
 ];
 
-cb.onTip(function(tip) {
+cb.onTip( function (tip) {
 
     // See if the user is in our list and add if not
     for ( var i = 0; i < userList.length && userList[i].name != tip['from_user']; i++ ) {
@@ -67,101 +67,101 @@ cb.onTip(function(tip) {
 
     // I'm giving a user a break here and incrementing if he enters
     // the room and tips before chatting by incrementing his thresholds
-    if  ( i == userList.length ) { // Means it wasn't found
-        i = userList.push({'name': msg['from_user'], 'mCount': 0,
+    if ( i == userList.length ) { // Means it wasn't found
+        i = userList.push( {'name': msg['from_user'], 'mCount': 0,
             'tPig': cb.settings.pig_threshold + cb.settings.increment,
-            'tMute': cb.settings.mute_threshold + cb.settings.increment }) - 1;
-        if (isUserSpecial(i, tip['from_user_in_fanclub'], tip['from_user_is_mod']) == true ) {
+            'tMute': cb.settings.mute_threshold + cb.settings.increment } ) - 1;
+        if ( isUserSpecial( i, tip['from_user_in_fanclub'], tip['from_user_is_mod'] ) == true ) {
             userList[i].tPig = 999999;
             userList[i].tMute = 999999;
         }
     }
-    cb.log( " i = " + i + " Count = " + userList[i].mCount);
+    cb.log( " i = " + i + " Count = " + userList[i].mCount );
 
-    if (userList[i].mCount >= userList[i].tPig) {
+    if ( userList[i].mCount >= userList[i].tPig ) {
         userList[i].tPig += cb.settings.increment;
     }
-    if (userList[i].mCount >= userList[i].tMute) {
+    if ( userList[i].mCount >= userList[i].tMute ) {
         userList[i].tMute += cb.settings.increment;
     }
 
     userList[i].mCount = 0;
 
-});
+} );
 
-cb.onMessage(function(msg){
+cb.onMessage( function (msg) {
 
     // First check to see if we're handling a command
-    if ( processCommands(msg) == true ) {
+    if ( processCommands( msg ) == true ) {
         return msg; // This is sloppy, but I hate seeing a function being
-                    // one giant "If" statement
+        // one giant "If" statement
     }
 
     // See if the user is in our list and add if not
     for ( var i = 0; i < userList.length && userList[i].name != msg['user']; i++ ) {
         // Do nothing
     }
-    if  ( i == userList.length ) { // Means it wasn't found
-        i = userList.push({'name': msg['user'], 'mCount': 0,
-            'tPig': cb.settings.pig_threshold, 'tMute': cb.settings.mute_threshold }) - 1;
-        if (isUserSpecial(i, msg['in_fanclub'], msg['is_mod']) == true ) {
+    if ( i == userList.length ) { // Means it wasn't found
+        i = userList.push( {'name': msg['user'], 'mCount': 0,
+            'tPig': cb.settings.pig_threshold, 'tMute': cb.settings.mute_threshold } ) - 1;
+        if ( isUserSpecial( i, msg['in_fanclub'], msg['is_mod'] ) == true ) {
             userList[i].tPig = 999999;
             userList[i].tMute = 999999;
         }
     }
 
 
-    cb.log( " i = " + i + " Count = " + userList[i].mCount);
+    cb.log( " i = " + i + " Count = " + userList[i].mCount );
 
     // Bump the users' message count
     userList[i].mCount++;
 
     // If over the thresholds then do "something" to the message
-    if (userList[i].mCount > userList[i].tMute){
+    if ( userList[i].mCount > userList[i].tMute ) {
         msg['X-Spam'] = true;
-        cb.chatNotice("Try TIPPING to become unmuted", userList[i].name,
-                       bcp.red, bcp.black, "bolder");
+        cb.chatNotice( "Try TIPPING to become unmuted", userList[i].name,
+            bcp.red, bcp.black, "bolder" );
     } else {
-        if (userList[i].mCount > userList[i].tPig ) {
-            msg['m'] = toPigLatin(msg['m']);
-            cb.chatNotice("Try TIPPING to stop chatting in Pig Latin", userList[i].name,
-                            bcp.yellow, bcp.red, "bolder");
+        if ( userList[i].mCount > userList[i].tPig ) {
+            msg['m'] = toPigLatin( msg['m'] );
+            cb.chatNotice( "Try TIPPING to stop chatting in Pig Latin", userList[i].name,
+                bcp.yellow, bcp.red, "bolder" );
         }
     }
 
 
     return msg;
 
-});
+} );
 
 function toPigLatin(txt) {
 
     var doubles = ["al", "an", "bl", "br", "ch", "cl", "dr", "fr", "gr",
-                   "or", "pl", "pr", "ps",
-                   "sh", "sl", "st", "th", "tr", "wh", "wr"];
+        "or", "pl", "pr", "ps",
+        "sh", "sl", "st", "th", "tr", "wh", "wr"];
     var vowelSounds = ["ea", "ei", "oa", "ou"];
     var vowels = ["a", "e", "i", "o", "u"];
 
-    var punct = [ ",", ".", "/","<",">","?",";","'",'"',":","[","]","{","}",
-                  "\\","|","!","@","#","$","%","^","&","*","(",")","-","=","+","_",
-                  "~","`", "0","1","2","3","4","5","6","7","8","9"];
+    var punct = [ ",", ".", "/", "<", ">", "?", ";", "'", '"', ":", "[", "]", "{", "}",
+        "\\", "|", "!", "@", "#", "$", "%", "^", "&", "*", "(", ")", "-", "=", "+", "_",
+        "~", "`", "0", "1", "2", "3", "4", "5", "6", "7", "8", "9"];
 
-    var words = txt.split(" ");
+    var words = txt.split( " " );
     var puncPart = "";
 
 
-    for (var i = 0; i < words.length; i++ ) {
+    for ( var i = 0; i < words.length; i++ ) {
 
         // Skip short words
-        if (words[i].length <= 2 ){
+        if ( words[i].length <= 2 ) {
             continue;
         }
 
         // Need to do something with punctuation
         puncPart = "";
-        for ( var j = words[i].length - 1; j >= 0; j--) {
-            if (punct.indexOf(words[i].substr(j,1)) != -1 ) {
-                puncPart = words[i].substr(j);
+        for ( var j = words[i].length - 1; j >= 0; j-- ) {
+            if ( punct.indexOf( words[i].substr( j, 1 ) ) != -1 ) {
+                puncPart = words[i].substr( j );
             } else {
                 break;
             }
@@ -191,7 +191,7 @@ function toPigLatin(txt) {
 
     }
 
-    return words.join(" ");
+    return words.join( " " );
 
 }
 function processCommands(msg) {
@@ -211,7 +211,7 @@ function processCommands(msg) {
 
     var idx = 0;
 
-    if ( msg['m'].substr(0,1) != "/") {
+    if ( msg['m'].substr( 0, 1 ) != "/" ) {
         return false;
     }
 
@@ -223,64 +223,71 @@ function processCommands(msg) {
     }
 
     var txt = msg['m']; // convenience
-    if (txt.match(/^\/pigreset/i)) {
+    if ( txt.match( /^\/pigreset/i ) ) {
         userList = [];
         return true;
     }
 
-    if (txt.match(/^\/pig /i)) {
-        if (txt.length > 5 ) {
-            if (txt.substr(5).toLowerCase() == cb.room_slug){
+    if ( txt.match( /^\/pig /i ) ) {
+        if ( txt.length > 5 ) {
+            if ( txt.substr( 5 ).toLowerCase() == cb.room_slug ) {
                 return true;
             }
-            idx = findUser(txt.substr(5).toLowerCase());
+            idx = findUser( txt.substr( 5 ).toLowerCase() );
             userList[idx].mCount = userList[idx].tPig;
             return true;
         } else {
-            cb.chatNotice ("Missing username in command", msg['user']);
+            cb.chatNotice( "Missing username in command", msg['user'] );
         }
     }
 
-    if (txt.match(/^\/pigmute /i)) {
-        if (txt.length > 9 ) {
-            if (txt.substr(9).toLowerCase() == cb.room_slug){
+    if ( txt.match( /^\/pigmute /i ) ) {
+        if ( txt.length > 9 ) {
+            if ( txt.substr( 9 ).toLowerCase() == cb.room_slug ) {
                 return true;
             }
-            idx = findUser(txt.substr(9).toLowerCase());
+            idx = findUser( txt.substr( 9 ).toLowerCase() );
             userList[idx].mCount = userList[idx].tMute;
             return true;
         } else {
-            cb.chatNotice ("Missing username in command", msg['user']);
+            cb.chatNotice( "Missing username in command", msg['user'] );
         }
     }
 
-    if (txt.match(/^\/unpig /i)) {
-        if (txt.length > 7 ) {
-            idx = findUser(txt.substr(7).toLowerCase());
+    if ( txt.match( /^\/unpig /i ) ) {
+        if ( txt.length > 7 ) {
+            idx = findUser( txt.substr( 7 ).toLowerCase() );
             userList[idx].mCount = 0;
             return true;
         } else {
-            cb.chatNotice ("Missing username in command", msg['user']);
+            cb.chatNotice( "Missing username in command", msg['user'] );
         }
     }
 
-    if (txt.match(/^\/notpig /i)) {
-        if (txt.length > 8 ) {
-            idx = findUser(txt.substr(8).toLowerCase());
+    if ( txt.match( /^\/notpig /i ) ) {
+        if ( txt.length > 8 ) {
+            idx = findUser( txt.substr( 8 ).toLowerCase() );
             userList[idx].tPig = 999999;
             userList[idx].tMute = 999999;
             return true;
         } else {
-            cb.chatNotice ("Missing username in command", msg['user']);
+            cb.chatNotice( "Missing username in command", msg['user'] );
         }
     }
+
+    if ( txt.match( /^\/help/i ) ) {
+        showHelp( msg['user'] )
+        return true;
+    }
+
+    return true;
 
 }
 
 
-function isUserSpecial(idx,fanclub,mod) {
+function isUserSpecial(idx, fanclub, mod) {
 
-    return (userList[idx].name == cb.room_slug) || fanclub == true || mod == true ;
+    return (userList[idx].name == cb.room_slug) || fanclub == true || mod == true;
 
 }
 
@@ -312,7 +319,7 @@ function showHelp(tgt) {
 }
 function init() {
 
-    showHelp(cb.room_slug);
+    showHelp( cb.room_slug );
 
 }
 
