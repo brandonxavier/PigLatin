@@ -48,9 +48,9 @@ var bcp = {
 
 cb.settings_choices = [
     {name: 'pig_threshold', type: 'int',
-        minValue: 5, maxValue: 99, defaultValue: 5, label: "Pig Threshold"},
+        minValue: 1, maxValue: 99, defaultValue: 5, label: "Pig Threshold"},
     {name: 'mute_threshold', type: 'int',
-        minValue: 6, maxValue: 99, defaultValue: 10, label: "Muted Threshold"},
+        minValue: 5, maxValue: 99, defaultValue: 10, label: "Muted Threshold"},
     {name: 'increment', type: 'int',
         minValue: 0, maxValue: 99, defaultValue: 2, label: "Increment Thresholds After User Tips"},
     {name: 'mod_commands', type: 'choice',
@@ -78,10 +78,11 @@ cb.onTip( function (tip) {
     }
     // cb.log( " i = " + i + " Count = " + userList[i].mCount );
 
+    // My original thought was to only increment the threshold if it
+    // was currently met . . . but that could lead to conditions where
+    // the mute threshold was LOWER than the pig threshold
     if ( userList[i].mCount >= userList[i].tPig ) {
         userList[i].tPig += cb.settings.increment;
-    }
-    if ( userList[i].mCount >= userList[i].tMute ) {
         userList[i].tMute += cb.settings.increment;
     }
 
