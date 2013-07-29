@@ -276,7 +276,7 @@ function processCommands(msg) {
     }
 
     if ( txt.match( /^\/help/i ) ) {
-        showHelp( msg['user'] )
+        showHelp( msg['user'] );
         return true;
     }
 
