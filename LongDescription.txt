@@ -1,0 +1,32 @@
+Pig Latin
+
+Overview:
+
+Do you get tired of those users who enter a room and chatter
+on endlessly . . . not really saying anything, and not spending
+any tokens either.  They treat that 1 lone token they've been
+saving like a sacred family heirloom.  I know I do.  And I think
+I know a few broadcasters who do as well . . .
+
+This bot aims to nudge them towards either tipping more or rambling
+less.  After a preset number of messages without a tip (default = 5)
+all the chatty users' messages gets converted to pig latin ;-) If
+the user continues to babble on in pig latin, he gets muted after a
+preset number of messages (default = 10).  That's TOTAL messages
+without a tip (i.e. with the default values, a user would get 5 regular
+messages, 5 converted to pig latin, and then be muted on message #11).
+
+Every time a user tries to chat while either on the pig or mute list,
+he's reminded he can get off the list by tipping.  And to be fair,
+if he DOES buy his way off the list(s), his limits will go up -- the
+default increase is 2, but the broadcaster can set this higher (or even
+0 if she doesn't want the limits increasing).
+
+Commands Available to Broadcaster (and optionally Mods):
+
+/pigreset - Restarts app all over - all msg counts and limits are reset
+/pig user - Puts named user in the pig list
+/pigmute user - Puts named user on the mute list
+/unpig user - Removes named user from pig/mute lists
+/notpig user - Prevents named user from being put on a list
+/help - Shows commands
