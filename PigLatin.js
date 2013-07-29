@@ -76,7 +76,7 @@ cb.onTip( function (tip) {
             userList[i].tMute = 999999;
         }
     }
-    cb.log( " i = " + i + " Count = " + userList[i].mCount );
+    // cb.log( " i = " + i + " Count = " + userList[i].mCount );
 
     if ( userList[i].mCount >= userList[i].tPig ) {
         userList[i].tPig += cb.settings.increment;
@@ -111,7 +111,7 @@ cb.onMessage( function (msg) {
     }
 
 
-    cb.log( " i = " + i + " Count = " + userList[i].mCount );
+    // cb.log( " i = " + i + " Count = " + userList[i].mCount );
 
     // Bump the users' message count
     userList[i].mCount++;
